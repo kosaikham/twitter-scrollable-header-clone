@@ -5,7 +5,8 @@ import {
   View,
   ScrollView,
   Image,
-  Animated
+  Animated,
+  Platform
 } from "react-native";
 
 const HEADER_MAX_HEIGHT = 120;
@@ -17,6 +18,7 @@ export default class App extends React.Component {
   state = {
     scrollY: new Animated.Value(0)
   };
+
   render() {
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -42,6 +44,17 @@ export default class App extends React.Component {
     const headerZIndex = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
       outputRange: [0, 1],
+      extrapolate: "clamp"
+    });
+
+    // For Android
+    const headerElevation = this.state.scrollY.interpolate({
+      inputRange: [
+        0,
+        HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT,
+        HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT + 5 + PROFILE_MIN_HEIGHT
+      ],
+      outputRange: [0, 0, 1],
       extrapolate: "clamp"
     });
 
@@ -79,6 +92,7 @@ export default class App extends React.Component {
             height: headerHeight,
             backgroundColor: "lightskyblue",
             zIndex: headerZIndex,
+            elevation: headerElevation,
             alignItems: "center"
           }}
         >
